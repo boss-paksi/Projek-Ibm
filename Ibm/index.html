@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task List</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50:  '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            accent: {
+              400: '#fb923c',
+              500: '#f97316',
+              600: '#ea580c',
+            }
+          },
+          fontFamily: {
+            sans: ['"Inter"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="bg-slate-100 min-h-screen font-sans text-slate-800 antialiased">
+
+  <!-- ===== PAGE WRAPPER ===== -->
+  <div class="min-h-screen flex flex-col items-center px-4 py-10 sm:py-16">
+
+    <!-- ===== HEADER ===== -->
+    <header class="w-full max-w-xl mb-8 text-center">
+      <div class="flex items-center justify-center gap-3 mb-1">
+        <!-- Checklist icon (inline SVG) -->
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary-600 shadow-md">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5"
+            viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9 12l2 2 4-4M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z" />
+          </svg>
+        </span>
+        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">List Tugas </h1>
+      </div>
+      <p class="text-slate-500 text-sm mt-1">Kelola tugas Anda dengan mudah dan efisien.</p>
+    </header>
+
+    <!-- ===== MAIN CARD ===== -->
+    <main class="w-full max-w-xl">
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+
+        <!-- ===== ADD TASK FORM ===== -->
+        <section class="p-5 border-b border-slate-100" aria-label="Tambah Task Baru">
+          <form id="taskForm" class="flex gap-2" novalidate>
+            <input
+              id="taskInput"
+              type="text"
+              placeholder="Tambah task baru..."
+              maxlength="120"
+              autocomplete="off"
+              class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50
+                     text-sm text-slate-800 placeholder-slate-400
+                     focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+                     transition duration-200"
+              aria-label="Input task baru"
+            />
+            <button
+              type="submit"
+              class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl
+                     bg-primary-600 hover:bg-primary-700 active:scale-95
+                     text-white text-sm font-semibold shadow-sm
+                     transition duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              aria-label="Tambah task"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"
+                viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Tambah
+            </button>
+          </form>
+          <!-- Inline error message -->
+          <p id="inputError" class="hidden text-xs text-red-500 mt-1.5 ml-1" role="alert"></p>
+        </section>
+
+        <!-- ===== FILTER TABS ===== -->
+        <section class="px-5 pt-4 pb-2 flex gap-2" aria-label="Filter Task">
+          <button data-filter="all"
+            class="filter-btn active-filter px-4 py-1.5 rounded-lg text-sm font-medium transition duration-200
+                   focus:outline-none focus:ring-2 focus:ring-primary-500">
+            Semua
+          </button>
+          <button data-filter="active"
+            class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium transition duration-200
+                   focus:outline-none focus:ring-2 focus:ring-primary-500">
+            Aktif
+          </button>
+          <button data-filter="completed"
+            class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium transition duration-200
+                   focus:outline-none focus:ring-2 focus:ring-primary-500">
+            Selesai
+          </button>
+        </section>
+
+        <!-- ===== TASK LIST ===== -->
+        <section class="px-5 pb-4" aria-label="Daftar Task" aria-live="polite">
+          <ul id="taskList" class="mt-2 space-y-2">
+            <!-- Task items rendered by JS -->
+          </ul>
+
+          <!-- Empty state -->
+          <div id="emptyState" class="hidden flex-col items-center justify-center py-12 text-center">
+            <svg class="w-12 h-12 text-slate-300 mb-3" fill="none" stroke="currentColor" stroke-width="1.5"
+              viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2
+                   M9 5a2 2 0 002 2h2a2 2 0 002-2
+                   M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p class="text-slate-400 text-sm font-medium">Tidak ada task di sini.</p>
+          </div>
+        </section>
+
+        <!-- ===== FOOTER SUMMARY ===== -->
+        <footer class="px-5 py-3 bg-slate-50 border-t border-slate-100
+                       flex items-center justify-between text-xs text-slate-400">
+          <span id="taskCounter">0 task tersisa</span>
+          <button id="clearCompleted"
+            class="text-accent-500 hover:text-accent-600 font-medium transition duration-200
+                   focus:outline-none focus:underline hidden">
+            Hapus Selesai
+          </button>
+        </footer>
+
+      </div><!-- /MAIN CARD -->
+    </main>
+
+  </div><!-- /PAGE WRAPPER -->
+
+  <!-- ===== EDIT MODAL ===== -->
+  <div id="editModal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4
+           bg-black/40 backdrop-blur-sm opacity-0 pointer-events-none
+           transition-opacity duration-200"
+    role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6
+                scale-95 transition-transform duration-200" id="modalBox">
+      <h2 id="modalTitle" class="text-base font-semibold text-slate-800 mb-3">Edit Task</h2>
+      <input
+        id="editInput"
+        type="text"
+        maxlength="120"
+        class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50
+               text-sm text-slate-800
+               focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+               transition duration-200"
+        aria-label="Edit task"
+      />
+      <p id="editError" class="hidden text-xs text-red-500 mt-1.5 ml-1" role="alert"></p>
+      <div class="flex gap-2 mt-4 justify-end">
+        <button id="cancelEdit"
+          class="px-4 py-2 rounded-xl text-sm font-medium text-slate-500
+                 hover:bg-slate-100 transition duration-200
+                 focus:outline-none focus:ring-2 focus:ring-slate-300">
+          Batal
+        </button>
+        <button id="saveEdit"
+          class="px-4 py-2 rounded-xl text-sm font-semibold text-white
+                 bg-primary-600 hover:bg-primary-700 active:scale-95
+                 transition duration-200 shadow-sm
+                 focus:outline-none focus:ring-2 focus:ring-primary-500">
+          Simpan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCRIPT ===== -->
+  <script src="script.js"></script>
+</body>
+</html>

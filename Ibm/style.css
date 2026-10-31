@@ -1,0 +1,148 @@
+/* =============================================================
+   style.css — Task List App
+   Hanya untuk styling tambahan yang tidak bisa dicapai
+   dengan Tailwind CSS utility classes secara langsung.
+   ============================================================= */
+
+
+/* ── Custom Scrollbar (Webkit) ─────────────────────────────── */
+#taskList::-webkit-scrollbar {
+  width: 4px;
+}
+#taskList::-webkit-scrollbar-track {
+  background: transparent;
+}
+#taskList::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* slate-300 */
+  border-radius: 999px;
+}
+
+
+/* ── Filter Button States ───────────────────────────────────── */
+/*
+  State aktif: background biru (primary-600) dengan teks putih.
+  State default: teks abu-abu (slate-500) dengan hover ringan.
+  Dikendalikan oleh JS dengan menambahkan/menghapus kelas .active-filter.
+*/
+.filter-btn {
+  color: #64748b; /* slate-500 */
+  background-color: transparent;
+}
+.filter-btn:hover {
+  background-color: #f1f5f9; /* slate-100 */
+  color: #334155;             /* slate-700 */
+}
+.filter-btn.active-filter {
+  background-color: #2563eb; /* primary-600 */
+  color: #ffffff;
+}
+
+
+/* ── Task Item Transition ───────────────────────────────────── */
+/*
+  Animasi masuk (fade + slide-up) saat task baru ditambahkan.
+  Kelas .task-enter ditambahkan oleh JS lalu dihapus setelah animasi selesai.
+*/
+@keyframes taskEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.task-enter {
+  animation: taskEnter 0.25s ease forwards;
+}
+
+
+/* ── Task Item Transition (keluar / hapus) ──────────────────── */
+@keyframes taskExit {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 80px;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+}
+.task-exit {
+  animation: taskExit 0.25s ease forwards;
+  overflow: hidden;
+}
+
+
+/* ── Checkbox Custom Style ──────────────────────────────────── */
+/*
+  Mengganti tampilan native checkbox dengan desain custom
+  yang sesuai dengan palet warna aplikasi.
+*/
+.task-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.125rem;    /* 18px */
+  height: 1.125rem;
+  min-width: 1.125rem;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1; /* slate-300 */
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.task-checkbox:hover {
+  border-color: #3b82f6; /* primary-500 */
+}
+.task-checkbox:checked {
+  background-color: #2563eb; /* primary-600 */
+  border-color: #2563eb;
+}
+/* Checkmark via pseudo-element */
+.task-checkbox:checked::after {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 8px;
+  border: 2px solid #ffffff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+
+/* ── Completed Task Text ────────────────────────────────────── */
+.task-text-completed {
+  text-decoration: line-through;
+  color: #94a3b8; /* slate-400 */
+}
+
+
+/* ── Modal Open / Close State ───────────────────────────────── */
+/*
+  Kelas .modal-open ditambahkan ke #editModal oleh JS
+  untuk menampilkan modal dengan smooth transition.
+*/
+#editModal.modal-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+#editModal.modal-open #modalBox {
+  transform: scale(1);
+}
+
+
+/* ── Focus Ring Override (untuk aksesibilitas) ──────────────── */
+:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
